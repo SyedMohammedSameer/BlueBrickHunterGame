@@ -1,2 +1,2 @@
 # BlueBrickHunterGame
-A normal game with graphics
+Built completely with basic C language graphics
