@@ -1,0 +1,136 @@
+# Multi-Agent College Mental Health Analysis System Configuration
+
+# LLM Configuration
+llm:
+  provider: "ollama"
+  base_url: "http://localhost:11434"
+  models:
+    primary: "llama3.1:70b"  # Main orchestrator model
+    health_specific: "meditron:70b"  # Mental health specialized
+    fast: "llama3.1:8b"  # Quick responses
+  embedding:
+    model: "nomic-embed-text"
+    dimension: 768
+  temperature: 0.7
+  max_tokens: 4096
+
+# Knowledge Graph Configuration
+knowledge_graph:
+  backend: "networkx"  # Options: networkx, neo4j
+  neo4j:
+    uri: "bolt://localhost:7687"
+    username: "neo4j"
+    password: "password"
+  node_types:
+    - "Student"
+    - "Location"
+    - "Activity"
+    - "MentalHealthState"
+    - "TemporalEvent"
+    - "Demographic"
+  relationship_types:
+    - "VISITED"
+    - "PERFORMED"
+    - "EXPERIENCED"
+    - "AT_LOCATION"
+    - "DURING"
+    - "CORRELATES_WITH"
+    - "PRECEDED"
+    - "BELONGS_TO"
+
+# Vector Store Configuration
+vector_store:
+  backend: "chromadb"
+  path: "./data/chromadb"
+  collections:
+    - "student_behaviors"
+    - "location_contexts"
+    - "mental_health_narratives"
+    - "temporal_patterns"
+  similarity_metric: "cosine"
+  top_k: 10
+
+# Data Configuration
+data:
+  raw_path: "./data/raw"
+  processed_path: "./data/processed"
+  agent_buckets_path: "./data/agent_buckets"
+  kaggle_dataset: "subigyanepal/college-experience-dataset"
+
+# Agent Configuration
+agents:
+  orchestrator:
+    model: "llama3.1:70b"
+    max_retries: 3
+    timeout: 30
+  spatial:
+    model: "llama3.1:70b"
+    tools: ["query_graph", "query_vectors", "compute_stats"]
+  behavioral:
+    model: "llama3.1:70b"
+    tools: ["query_graph", "query_vectors", "compute_stats"]
+  mental_health:
+    model: "meditron:70b"
+    tools: ["query_graph", "query_vectors", "compute_stats", "predict"]
+  temporal:
+    model: "llama3.1:70b"
+    tools: ["query_graph", "query_vectors", "time_series_analysis"]
+  social:
+    model: "llama3.1:70b"
+    tools: ["query_graph", "query_vectors", "network_analysis"]
+  demographic:
+    model: "llama3.1:70b"
+    tools: ["query_graph", "compute_stats", "cohort_analysis"]
+
+# Analytics Configuration
+analytics:
+  causal_inference:
+    method: "backdoor"  # Options: backdoor, instrumental_variable
+    confidence_level: 0.95
+  prediction:
+    models: ["xgboost", "lstm", "prophet"]
+    test_size: 0.2
+    cross_validation_folds: 5
+  anomaly_detection:
+    method: "isolation_forest"
+    contamination: 0.1
+  clustering:
+    method: "hdbscan"
+    min_cluster_size: 5
+
+# Interface Configuration
+interface:
+  gradio:
+    server_name: "0.0.0.0"
+    server_port: 7860
+    share: false
+  tabs:
+    - "Query Interface"
+    - "Knowledge Graph Visualization"
+    - "Similarity Search"
+    - "Predictive Dashboard"
+    - "Agent Debug"
+
+# Logging Configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  file: "./logs/system.log"
+  format: "{time:YYYY-MM-DD HH:mm:ss} | {level} | {name}:{function}:{line} - {message}"
+  rotation: "100 MB"
+  retention: "30 days"
+
+# Performance Configuration
+performance:
+  batch_size: 64
+  num_workers: 4
+  cache_enabled: true
+  cache_size: 1000
+  gpu_acceleration: true
+
+# Evaluation Configuration
+evaluation:
+  metrics:
+    retrieval: ["precision", "recall", "ndcg"]
+    prediction: ["rmse", "mae", "r2"]
+    classification: ["accuracy", "f1", "auc_roc"]
+  benchmark_queries_path: "./config/benchmark_queries.json"
